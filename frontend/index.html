@@ -106,15 +106,15 @@
 
         async function loadPOIs() {
             try {
-                const res = await fetch(${API_BASE}/api/pois/geojson);
+                const res = await fetch(`${API_BASE}/api/pois/geojson`);
                 const geojson = await res.json();
                 clearPOIs();
                 geojson.features.forEach(f => {
                     const [lng, lat] = f.geometry.coordinates;
-                    const label = ${f.properties.name} [];
+                    const label = `${f.properties.name} [${f.properties.category}]`;
                     // Leaflet
                     L.marker([lat, lng])
-                        .bindPopup(<b></b><br>)
+                        .bindPopup(`<b>${label}</b><br>${f.properties.description || ""}`)
                         .addTo(leafletLayer);
                     // OpenLayers
                     const feat = new ol.Feature({
@@ -144,7 +144,7 @@
                 return;
             }
             try {
-                const res = await fetch(${API_BASE}/api/pois, {
+                const res = await fetch(`${API_BASE}/api/pois`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ name, category, description, lng, lat })
